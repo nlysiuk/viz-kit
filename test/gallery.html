@@ -1,0 +1,38 @@
+<!doctype html><meta charset="utf-8"><title>viz-kit: галерея</title>
+<style>body{margin:0}.case{width:390px;margin:0 0 12px}</style>
+<script src="../viz.js"></script>
+
+<div class="case"><v-panel><v-share label="Пробная версия, купили" k="5" n="32">Выборка мала, решать рано.</v-share></v-panel></div>
+<div class="case"><v-panel><v-share label="Ровно 40, все горят" k="40" n="40">Граница квадратов.</v-share></v-panel></div>
+<div class="case"><v-panel><v-share label="Ноль из двенадцати" k="0" n="12">Ноль всё равно оставляет шанс.</v-share></v-panel></div>
+<div class="case"><v-panel><v-share label="Одна единица" k="1" n="1"></v-share></v-panel></div>
+<div class="case"><v-panel><v-share label="Уже сетка" k="7" n="41">Граница сетки снизу.</v-share></v-panel></div>
+<div class="case"><v-panel><v-share label="Ответы на письма" k="18" n="640">Выборка большая, интервал не нужен.</v-share></v-panel></div>
+<div class="case"><v-panel><v-share label="Две тысячи" k="150" n="2000">Граница сетки сверху.</v-share></v-panel></div>
+<div class="case"><v-panel><v-share label="Уже полоса" k="300" n="2001">Граница полосы.</v-share></v-panel></div>
+<div class="case" id="huge"><v-panel><v-share label="Сто тысяч" k="7" n="100000">Полоса, а не сто тысяч элементов.</v-share></v-panel></div>
+<div class="case"><v-panel><v-share label="Спецсимволы &lt;в тексте&gt;" k="2" n="5">Меньше &lt; больше &gt; и &amp;, всё текстом.</v-share></v-panel></div>
+
+<div class="case" data-bad><v-panel><v-share label="k больше n" k="30" n="27">Этого текста быть не должно.</v-share></v-panel></div>
+<div class="case" data-bad><v-panel><v-share label="n равно нулю" k="0" n="0"></v-share></v-panel></div>
+<div class="case" data-bad><v-panel><v-share label="Не число" k="много" n="27"></v-share></v-panel></div>
+<div class="case" data-bad><v-panel><v-share label="Дробное" k="1.5" n="27"></v-share></v-panel></div>
+<div class="case" data-bad><v-panel><v-share label="Меньше нуля" k="-1" n="27"></v-share></v-panel></div>
+<div class="case" data-bad><v-panel><v-share label="Нет n" k="3"></v-share></v-panel></div>
+
+<pre id="overflow"></pre>
+<pre id="expected"></pre>
+<pre id="stray"></pre>
+<pre id="hugedom"></pre>
+<script>
+window.addEventListener('load', function () {
+  setTimeout(function () {
+    var all = document.querySelectorAll.bind(document);
+    var over = Array.prototype.filter.call(all('.case'), function (c) { return c.scrollWidth > c.clientWidth; });
+    document.getElementById('overflow').textContent = over.length;
+    document.getElementById('expected').textContent = all('.case[data-bad]').length;
+    document.getElementById('stray').textContent = all('.case:not([data-bad]) .v-err').length;
+    document.getElementById('hugedom').textContent = all('#huge *').length;
+  }, 300);
+});
+</script>

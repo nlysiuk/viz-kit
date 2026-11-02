@@ -1,6 +1,8 @@
 'use strict';
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const { wilson, percent, formFor, axisMax, checkShare } = require('../viz.js');
 
 test('wilson: 3 из 27 округляется до 3,9 и 28,1', () => {
@@ -72,4 +74,12 @@ test('checkShare: не числа и пропуски', () => {
 test('checkShare: дробные', () => {
   assert.match(checkShare(1.5, 27), /целыми/);
   assert.match(checkShare('3', '27.5'), /целыми/);
+});
+
+test('order-last: те же блоки, что в галерее, скрипт после них', () => {
+  const line = '<script src="../viz.js"></script>\n';
+  const gallery = fs.readFileSync(path.join(__dirname, 'gallery.html'), 'utf8');
+  const last = fs.readFileSync(path.join(__dirname, 'order-last.html'), 'utf8');
+  assert.equal(last.replace(line, ''), gallery.replace(line, ''));
+  assert.ok(last.indexOf(line) > last.lastIndexOf('class="case"'));
 });

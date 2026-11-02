@@ -47,6 +47,15 @@
 <div class="case" data-bad><v-photos><v-photo heading="Нет адреса">Описание.</v-photo></v-photos></div>
 <div class="case" data-bad><v-photos><v-photo src="data:image/webp;base64,UklGRoIBAABXRUJQVlA4IHYBAAAwEQCdASqEALAAPyWSyFouKykkI5dIccAkiWVu3/T3/7gwT0gTd3WiVoizPSkZJtHCg+TFj+2XWrkWMtHgxmOfSt50z6nHQp31GODrhtN54UDXnU9pLp1wMiZJMWVlIGWcCPtlZSg0B7KcllT6Y8COMfhyrWXqDmp6Tbm9bWz4/////7ySLelKOh0VOHtRagDmgAD+6oqM7HpUPSSAOhIx/5C5qM0VwC4JBq/tjKfztYggnSTaAKgMqG0az71MtD85+OIV76fRWd3ZaqGNy5Nm9CFydAG+jefJfGYvu+VGoOG0FuxBVcosLF9bNuZlD46ry9elXU9pmuOp8kvEWjru3eiEyKhXzPg9/FrX2WEhLOxOd2ZWtOX+IcNUsxropBWk8TCuYCcS2CuEOVZwPx3zxcSQjXk1BL9nqTQI2L8+mJlI4p7NRhF9XSzIPPh3Nk+aTKcUiiFCx8Q4Lc1l/g+422F0VodZ7NlvKcglCAADbGAhjmQAAA==">Нет названия.</v-photo></v-photos></div>
 
+<div class="case" data-bad><v-panel><v-share label="Самозакрытый A" k="3" n="27"/><v-share label="Самозакрытый B" k="1" n="2"/><v-item heading="C">Описание C</v-item></v-panel></div>
+<div class="case" data-bad><v-panel><v-share label="Сырой знак" k="2" n="5">k<n значит мало</v-share></v-panel></div>
+<div class="case" data-bad><v-panel><v-item heading="Перенос в тексте">Первая строка<br>Вторая строка</v-item></v-panel></div>
+<div class="case" data-bad><v-photos><v-photo src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" heading="Раз"/><v-photo src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" heading="Два"/></v-photos></div>
+<div class="case" data-bad><v-photos><v-photo src="data:image/webp;base64,…" heading="Адрес скопирован из примера">Описание.</v-photo></v-photos></div>
+<div class="case" data-bad><v-panel><v-item heading="Кафе "Ромашка" рядом" tag="Пилюля" tone="good">Кавычка в атрибуте.</v-item></v-panel></div>
+<div class="case" data-bad><v-panel><v-share title="Подпись не там" k="1" n="2"></v-share></v-panel></div>
+<div class="case" data-bad><v-panel><v-share k="1" n="2">Нет подписи.</v-share></v-panel></div>
+
 <script src="../viz.js"></script>
 <pre id="overflow"></pre>
 <pre id="expected"></pre>

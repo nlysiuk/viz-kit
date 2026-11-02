@@ -21,7 +21,7 @@
   // Доля по-русски: 11,1%. Ноль и сто только когда это правда.
   function percent(x) {
     if (x > 0 && x < 0.0005) return '<0,1%';
-    if (x < 1 && x > 0.9995) return '>99,9%';
+    if (x < 1 && x >= 0.9995) return '>99,9%';
     return (x * 100).toFixed(1).replace(/\.0$/, '').replace('.', ',') + '%';
   }
 
@@ -48,8 +48,13 @@
     return null;
   }
 
+  // Атрибуты, которых блок не знает: опечатка, title или обрывок после кавычки.
+  function unknownAttrs(names, allowed) {
+    return names.filter(function (name) { return allowed.indexOf(name) < 0 && !/^data-/.test(name); });
+  }
+
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { wilson: wilson, percent: percent, formFor: formFor, axisMax: axisMax, checkShare: checkShare };
+    module.exports = { wilson: wilson, percent: percent, formFor: formFor, axisMax: axisMax, checkShare: checkShare, unknownAttrs: unknownAttrs };
   }
   if (typeof customElements === 'undefined' || customElements.get('v-share')) return;
 
@@ -176,9 +181,22 @@
       if (this.hasAttribute('data-v')) return;
       this.setAttribute('data-v', '');
       var self = this;
-      var go = function () { self.fill(); };
+      var go = function () {
+        var bad = self.shapeError();
+        if (bad) self.fail(bad);
+        else self.fill();
+      };
       if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go, { once: true });
       else queueMicrotask(go);
+    }
+    // Вложенный тег или чужой атрибут значат потерянные данные: лучше ошибка, чем молчание.
+    shapeError() {
+      var name = this.localName, allowed = this.constructor.attrs;
+      var child = this.firstElementChild;
+      if (child) return name + ': внутри тега другой тег (' + child.localName + '). Закрывай блок через </' + name + '>, знак < пиши как &lt;';
+      var extra = unknownAttrs(this.getAttributeNames(), allowed);
+      if (extra.length) return name + ': неизвестный атрибут (' + extra.join(', ') + '), можно ' + allowed.join(', ') + '. Кавычку в значении заменяй на «ёлочки»';
+      return null;
     }
     fail(message) {
       this.textContent = '';
@@ -188,6 +206,7 @@
 
   class VShare extends Block {
     fill() {
+      if (!this.getAttribute('label')) return this.fail('v-share: нет label');
       var k = this.getAttribute('k'), n = this.getAttribute('n');
       var bad = checkShare(k, n);
       if (bad) return this.fail(bad);
@@ -197,7 +216,7 @@
       var left = el('div');
       var number = el('div', 'v-n', group(k));
       number.appendChild(el('span', '', '/' + group(n)));
-      left.append(el('div', 'v-l', this.getAttribute('label') || ''), number);
+      left.append(el('div', 'v-l', this.getAttribute('label')), number);
       var right = el('div');
       right.appendChild(FORMS[formFor(n)](k, n));
       var line = percent(k / n);
@@ -271,7 +290,9 @@
       var bad = checkCard('v-photo', heading, tone);
       if (bad) return this.fail(bad);
       var text = this.textContent.trim();
+      var self = this;
       var img = el('img');
+      img.onerror = function () { self.fail('v-photo: картинка не читается, проверь data:-адрес'); };
       img.src = src;
       img.alt = heading;
       var side = el('div');
@@ -282,6 +303,10 @@
       this.append(img, side);
     }
   }
+
+  VShare.attrs = ['label', 'k', 'n'];
+  VItem.attrs = ['heading', 'tag', 'tone'];
+  VPhoto.attrs = ['src', 'heading', 'tag', 'tone'];
 
   customElements.define('v-share', VShare);
   customElements.define('v-item', VItem);

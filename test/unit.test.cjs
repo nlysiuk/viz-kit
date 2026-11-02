@@ -3,7 +3,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { wilson, percent, formFor, axisMax, checkShare } = require('../viz.js');
+const { wilson, percent, formFor, axisMax, checkShare, unknownAttrs } = require('../viz.js');
 
 test('wilson: 3 из 27 округляется до 3,9 и 28,1', () => {
   const [lo, hi] = wilson(3, 27);
@@ -28,6 +28,13 @@ test('percent: запятая, одна цифра, без лишнего нул
 test('percent: ноль и сто только когда это правда', () => {
   assert.equal(percent(7 / 100000), '<0,1%');
   assert.equal(percent(99999 / 100000), '>99,9%');
+  assert.equal(percent(1999 / 2000), '>99,9%');
+  assert.equal(percent(3998 / 4000), '>99,9%');
+});
+
+test('unknownAttrs: чужие атрибуты видны, data-* не считаются', () => {
+  assert.deepEqual(unknownAttrs(['label', 'k', 'n', 'data-v'], ['label', 'k', 'n']), []);
+  assert.deepEqual(unknownAttrs(['heading', 'ромашка"', 'title'], ['heading', 'tag', 'tone']), ['ромашка"', 'title']);
 });
 
 test('formFor: границы 40 и 2000', () => {
